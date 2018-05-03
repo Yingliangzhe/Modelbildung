@@ -21,10 +21,10 @@ Z = [Tm 1]; % Zaehler des Polynomes
 Gs = tf(N,Z); % Uebertragungsfunktion des PT1 Glieds
 [A,B,C,D] = tf2ss(N,Z); 
 
-if flag == 0 % Ausgabe der Anfangswerte f¨¹r den
+if flag == 0 % Ausgabe der Anfangswerte für den
 % Zustand auf Vektor x0
 x0 = 0;%>>> erg?nzen ....
-sys = [1,0,1,1,0,0];% diese Zeile ist nur f¨¹r Simulink n?tig,
+sys = [1,0,1,1,0,0];% diese Zeile ist nur für Simulink n?tig,
 % sie gilt so NUR in diesem Beispiel!
 elseif abs(flag) == 1 % Ausgabe der Ableitungen von x auf
 % Vektor sys = x' = f(x(t),u(t),t)
