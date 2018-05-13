@@ -1,65 +1,60 @@
 % MODSIM Laborpraktikum, 1. Aufgabe
 % Prof. K. Janschek, Dr.-Ing. Th. Range, Dr.-Ing. S. Dyblenko
 %
-% main_a1.m - Realisierung der VPG-Methode mit Fehlersch?tzung
+% main_a1.m - Realisierung der VPG-Methode mit Fehlerschätzung
 % für PT1-Glied
-% zu erg?nzende Codezeilen sind mit ">>> erg?nzen ...." und ...“gekennzeichnet
-clear all % L?sche Arbeitsspeicher
+% zu ergänzende Codezeilen sind mit ">>> ergänzen ...." und ...“gekennzeichnet
+clear all % Lösche Arbeitsspeicher
 Tm = 10; % Konstante des PT1, [s]
 h = 0.1; % Schrittweite, (s)
 t0 = 0; % Integrationsbeginn, [s]
 tf = 300; % Integrationsende, [s]
 t = []; % Zeitwerte für Plot [s]
-d = []; % Fehler-Sch?tzwerte
+d = []; % Fehler-Schätzwerte
 u = []; % Stellwerte u(t)
 y = []; % Ausgangswerte y(t)
 ys = []; % Soll-Ausgangswerte y_soll(t)
-x = [];
 % Initialisierung
-[dum,x(1)] = system_pt1(t0,0,0,0);
+[dum,x(1)] = system_pt1([],[],[],0);
 d(1) = 0;
 % Integration nach VPG-Methode
 ti = t0;
 i = 1;
+ys(1)=0; %erganzen
 while ti <= tf
-    % Berechnung des Soll-Ausgangswertes
-%     if (ti+h)>=0 || (ti+h)<1
-%         ys(i+1) = 0;%>>> erg?nzen ....
-%     elseif (ti+h)>=1
-%         ys(i+1) = 5*(1-exp(ti+h-1)/Tm);
-%     end
+% Berechnung des Soll-Ausgangswertes
+    if (ti+h)>=0 && (ti+h)<1
+        ys(i+1) = 0; 
+    elseif (ti+h)>= 1
+        ys(i+1)= 5*(1-exp(-(ti+h-1)/Tm)); %>>> ergänzen ....
+    end
+% Berechnung des Stellwertes
+    if ti>=0 && ti<1
+     u(i)=0;
+    elseif ti >= 1
+     u(i) = 5;%>>> ergänzen ....
+    end
     
-    if ti<1
-        ys(i) = 0;
-    elseif ti>=1
-        ys(i) = 5*(1-exp(-(ti-1)/Tm));
-    else 
-        ys(i) = 0;
-    end
-    % Berechnung des Stellwertes
-    if ti<1 
-        u(i) = 0;%>>> erg?nzen ....
-    elseif ti>=1
-        u(i) = 5;
-    else 
-        u(i)=0;
-    end
-    % Berechnung des Ausgangswertes
-    y(i) = system_pt1( ti , x(i) , u(i) , 3); %die Parameter einsetzen
-    % Berechnung der Koeffizienten für VPG-Methode
-    k1 = system_pt1( ti , x(i) , u(i)  , 1); %die Parameter einsetzen
-    k2 = system_pt1( ti+h/2 , x(i)+h*k1/2 , u(i)  , 1); %die Parameter einsetzen
-    k3 = system_pt1( ti , x(i) , u(i)  , 1); %die Parameter einsetzen
-    % Wichtiger Hinweis: Die Parameter bei den Aufrufen von system_pt1(...)
-    % müssen unter Beachtung von jeweiligen Zeitpunkten bestimmt werden!
-    % Berechnung des Zustands-Sch?tzwertes x(ti+h)
-    x(i+1) = x(i)+ h*k2;%>>> erg?nzen ....
-    % Berechnung der LDF Fehlerabsch?tzung d(ti+h)
-    d(i+1) = ys(i)-y(i);%>>> erg?nzen ....
-    t(i) = ti; % Zeitwert für Plot speichern
-    ti = ti + h; % Zeitvariable um einen Schritt erh?hen
-    i = i + 1; % Index inkrementieren
+
+% Berechnung des Ausgangswertes
+y(i) = system_pt1( ti , x(i) , u(i) , 3); %die Parameter einsetzen
+% Berechnung der Koeffizienten für VPG-Methode
+k1 = system_pt1( ti ,  x(i) , u(i) , 1); %die Parameter einsetzen
+k2 = system_pt1( ti+h/2 ,  x(i)+h/2*k1 , u(i) , 1); %die Parameter einsetzen
+k3 = system_pt1(  ti+h ,  x(i)-h*k1+2*h*k2 , u(i) , 1); %die Parameter einsetzen,to be changed.
+% Wichtiger Hinweis: Die Parameter bei den Aufrufen von system_pt1(...)
+% müssen unter Beachtung von jeweiligen Zeitpunkten bestimmt werden!
+% Berechnung des Zustands-Schätzwertes x(ti+h)
+x(i+1) =x(i)+h*k2 %>>> ergänzen ....
+% Berechnung der LDF Fehlerabschätzung d(ti+h)
+d(i+1) =ys(i+1)-ys(i)-h*k3 %>>> ergänzen ....
+t(i) = ti; % Zeitwert für Plot speichern
+ti = ti + h; % Zeitvariable um einen Schritt erhöhen
+i = i + 1; % Index inkrementieren
 end
+%%selbst hinzugefuegt
+ys(end)=[];
+
 d = d(1:end-1);
 result = [t;d];
 % Anzeige der Ergebnisse
@@ -69,6 +64,6 @@ subplot(2,1,2); plot(t,y); title('Ausgang PT1-Glied');zoom on;grid on;
 xlabel('Zeit, s');
 figure(2);
 subplot(2,1,1); plot(t,y-ys,'.-'); title('GDF berechnet');zoom on;grid on;
-tit=sprintf('LDF gesch?tzt: max. Betrag = %g',max(abs(d)));
+tit=sprintf('LDF geschätzt: max. Betrag = %g',max(abs(d)));
 subplot(2,1,2); plot(t,d,'.-'); title(tit);zoom on;grid on;
 xlabel('Zeit, s');
