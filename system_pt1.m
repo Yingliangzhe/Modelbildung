@@ -2,7 +2,7 @@
 %
 % Dr.-Ing. Th. Range, Dr.-Ing. S. Dyblenko
 %
-% zu ergänzende Codezeilen sind mit ">>> ergänzen ...." gekennzeichnet
+% zu erg?nzende Codezeilen sind mit ">>> erg?nzen ...." gekennzeichnet
 % Berechnung des Systems "PT1-Glied"
 %
 % (Hinweis: Die Struktur des Programms erlaubt eine Einbindung in
@@ -16,18 +16,18 @@ function [sys, x0] = system_pt1( t, x, u, flag )
 % flag - Steuerparameter, legt fest, welche Ausgabe
 % gefordert wird:
 Tm = 10; % Zeitkonstante des PT1-Gliedes
-if flag == 0 % Ausgabe der Anfangswerte für den
+if flag == 0 % Ausgabe der Anfangswerte f¨¹r den
 % Zustand auf Vektor x0
-x0 = 0;%>>> ergänzen ....
-sys = [1,0,1,1,0,0];% diese Zeile ist nur für Simulink nötig,
+x0 = 0;%>>> erg?nzen ....
+sys = [1,0,1,1,0,0];% diese Zeile ist nur f¨¹r Simulink n?tig,
 % sie gilt so NUR in diesem Beispiel!
 elseif abs(flag) == 1 % Ausgabe der Ableitungen von x auf
 % Vektor sys = x' = f(x(t),u(t),t)
-sys = -x/Tm+u/Tm;%>>> ergänzen ....
+sys = -x/Tm+u/Tm;%>>> erg?nzen ....
 elseif flag == 3 % Ausgabe der Ausgangswerte des
 % Systems auf Vektor sys:
 % sys = y = g(x(t),u(t),t)
-sys = x%>>> ergänzen ....
+sys = x;%>>> erg?nzen ....
 else % bei anderen Flagwerten nichts ausgeben
 sys = [];
 end
