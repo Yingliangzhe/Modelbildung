@@ -39,20 +39,21 @@ while ti <= tf
     % Berechnung der gesch?tzte lokaler Fehler
     % d_dach = h^2/2*max(x''(t)),t belongs to (ti, ti+1)
         if (ti+h)>=0 && (ti+h)<1
-             d_dach(i+1) = 0; 
-        elseif (ti+h)>= 1
-            d_dach(i+1)=h^2/2*(-5*((ti+h-1)/Tm)^2*exp((-ti+h-1)/Tm)); %>>> erg?nzen ....
+                 d_dach(i+1) = 0; 
+            elseif (ti+h)>= 1
+                %d_dach(i+1)=h^2/2*(-5*((ti+h-1)/Tm)^2*exp((-ti+h-1)/Tm)); %>>> erg?nzen .... //TODO: the maximal value of d_i+1 is always at the begin point of current step. so the the value appears at ti
+                d_dach(i+1)=-h^3/6*(-5/(Tm)^3*exp((-(ti-1)/Tm))); %>>> erg?nzen .... //TODO: the maximal value of d_i+1 is always at the beg		       
         end
-
-
         % Berechnung des Soll-Ausgangswertes
-        h_neu = h_alt*(e_LDF/abs(d_dach(i+1)))^(1/3);
+        h_neu = h*(e_LDF/abs(d_dach(i+1)))^(1/3);
         if (h_neu >= h_max) || (h_neu <= h_min)
             if h_neu >= h_max 
                 h_neu = h_max;
+                h=h_neu;
                 flag = true;
             else  
                 h_neu = h_min;
+                h=h_neu;
                 flag = true;
             end
         elseif h_neu > 2*h_alt
@@ -60,11 +61,13 @@ while ti <= tf
             flag = true;
         elseif h_neu <= h_alt
              h = 0.75*h_neu;
+             h_alt=h;
              flag = false;
              continue
         else
             flag = true;
         end
+
 
         % Berechnung des Stellwertes
         if ti>=0 && ti<1
@@ -88,11 +91,7 @@ while ti <= tf
         % Wichtiger Hinweis: Die Parameter bei den Aufrufen von system_pt1(...)
         % m¨¹ssen unter Beachtung von jeweiligen Zeitpunkten bestimmt werden!
         % Berechnung des Zustands-Sch?tzwertes x(ti+h)
-        x(i+1) =x(i)+h*k2; %>>> erg?nzen ....
-
-
-
-
+        x(i+1) =x(i)+h*k2; %>>> erg?nzen ...
         % Berechnung der LDF Fehlerabsch?tzung d(ti+h)
         d(i+1) =ys(i+1)-ys(i)-h*k3; %>>> erg?nzen ....
     end
@@ -100,7 +99,7 @@ while ti <= tf
     ti = ti + h; % Zeitvariable um einen Schritt erh?hen
     i = i + 1; % Index inkrementieren
     h_alt = h;
-    h_test(i+1)=h;
+    h_test(i-1)=h;
     flag = false;% sprungen in sub-schleife
 end
 %%selbst hinzugefuegt
@@ -119,4 +118,5 @@ subplot(2,1,2); plot(t,d,'.-'); title(tit);zoom on;grid on;
 xlabel('Zeit, s');
 h_test(end)=[];h_test(end-1)=[];
 figure(3);
-plot(t,h_test);
+plot(t(1:end-2),h_test);
+grid on 

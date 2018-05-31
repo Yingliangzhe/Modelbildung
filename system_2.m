@@ -1,6 +1,8 @@
 % SUBSYSTEM DESCRIPTION: system_2.m Hysteresis
 function[xdot,y] = system_2(x,u,t)
 global u_prev;
+global state_prev;
+global flag_x_y_cal;
 % state equation (derivative)
 xdot(1) = 0; % no states ---> dummy output
 % output equation
@@ -28,6 +30,9 @@ elseif u_prev > u(1)
         y(1) = 0;
     end
 else
-    y(1) = x(1);
+    y(1) = state_prev;
 end
-u_prev = u(1);
+if  flag_x_y_cal == 1
+    state_prev=y(1);
+    u_prev = u(1);
+end
