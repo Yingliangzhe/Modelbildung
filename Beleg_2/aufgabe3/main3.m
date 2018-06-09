@@ -7,7 +7,7 @@ c_p = 75e6; %[N/m]
 m_g = m_k + m_p;
 
 Ta = 0.015; 
-KI = 0.1;
+KI = 0.001;
 %%syms s;
 
 [A,B,C,D] = dlinmod('Regelstrecke',Ta);
@@ -19,12 +19,12 @@ FI = expm(A*Ta);
 I = diag([1,1,1]);
 %FI = ilaplace(inv(s*I-A));
 
-H = inv(A)*(FI - I)*B;
+%H = inv(A)*(FI - I)*B;
 [num,den] = ss2tf(A,B,C,D);
 G = tf(num,den,Ta)
 dbode(A,B,C,D,Ta);
 grid on
 
-x_inf = inv(I-FI)*H*[0.001];
-y = C*x_inf;
+%x_inf = inv(I-FI)*H*[0.001];
+%y = C*x_inf;
 
