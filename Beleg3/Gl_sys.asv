@@ -1,0 +1,19 @@
+function [phi] = Gl_sys (pn_1, pn_0)
+
+%Trapezmethode
+global C1;
+global C2;
+global R;
+global h;
+
+T = single(DAE_Modell(s,u));
+
+phi1 = pn_1(1) - x1i -(h/2)*((z1i/C1)+T(1)); % T(1) ist z1(i+1)/c1  8-10
+phi2 = pn_1(2) - x2i -(h/2)*((z2i/C2)+T(2)); % ...z2(i+1)/c2
+phi3 = T(3);
+phi4 = T(4);
+phi5 = T(5);
+phi6 = T(6);
+phi = [phi1;phi2;phi3;phi4;phi5;phi6];
+
+end
